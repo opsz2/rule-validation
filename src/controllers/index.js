@@ -8,7 +8,15 @@ exports.validateRuleController = (req, res, next) => {
 
   let fieldValue = data;
 
-  field.split('.').forEach((value) => {
+  field.split('.').forEach((value, index) => {
+    if (index > 2) {
+      const e = new Error(
+        `invalid field ${field}. Only 2 levels of nested object supported.`,
+      );
+      e.statusCode = httpStatus.BAD_REQUEST;
+      e.data = null;
+      throw e;
+    }
     if (fieldValue[value]) {
       fieldValue = fieldValue[value];
       return;
